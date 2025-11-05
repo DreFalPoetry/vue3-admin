@@ -2,7 +2,12 @@
   <div class="page-container">
     <el-card>
       <!-- 搜索表单（公用组件） -->
-      <SearchForm v-model="searchForm" :items="searchItems as any" @search="handleSearch" @reset="handleReset" />
+      <SearchForm
+        v-model="searchForm"
+        :items="searchItems as any"
+        @search="handleSearch"
+        @reset="handleReset"
+      />
     </el-card>
     <el-card>
       <div class="generate-table-wrapper">
@@ -39,45 +44,24 @@
       </div>
     </el-card>
 
-    <!-- 新增/编辑对话框 -->
-    <el-dialog
+    <GoodsDialog
       v-model="dialogVisible"
       :title="dialogTitle"
-      width="600px"
-      :close-on-click-modal="false"
-      @close="handleDialogClose"
-    >
-      <el-form ref="formRef" :model="formData" :rules="formRules" label-width="100px">
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入名称" />
-        </el-form-item>
-        <el-form-item label="编码" prop="code">
-          <el-input v-model="formData.code" placeholder="请输入编码" />
-        </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="formData.status">
-            <el-radio label="1"> 启用 </el-radio>
-            <el-radio label="0"> 禁用 </el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="formData.remark" type="textarea" :rows="3" placeholder="请输入备注" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="dialogVisible = false"> 取消 </el-button>
-        <el-button type="primary" :loading="submitLoading" @click="handleSubmit"> 确定 </el-button>
-      </template>
-    </el-dialog>
+      :loading="submitLoading"
+      :record="editRecord"
+      @confirm="onConfirmDialog"
+      @closed="handleDialogClose"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import SearchForm from '@/components/SearchForm.vue'
 import BaseTable from '@/components/base-table/Index.vue'
+import GoodsDialog from './GoodsDialog.vue'
 // import { get, post } from '@/api/http'
 
 defineOptions({
@@ -137,21 +121,7 @@ function onSortChange(info: any) {
 const dialogVisible = ref(false)
 const dialogTitle = ref('新增')
 const submitLoading = ref(false)
-const formRef = ref<FormInstance>()
-const formData = reactive<FormItem>({
-  id: undefined,
-  name: '',
-  code: '',
-  status: '1',
-  remark: ''
-})
-
-// 表单验证规则
-const formRules: FormRules = {
-  name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-  code: [{ required: true, message: '请输入编码', trigger: 'blur' }],
-  status: [{ required: true, message: '请选择状态', trigger: 'change' }]
-}
+const editRecord = ref<Partial<FormItem> | null>(null)
 
 // 类型定义
 interface TableItem {
@@ -232,20 +202,20 @@ function handleReset() {
 function handleAdd() {
   dialogTitle.value = '新增'
   dialogVisible.value = true
-  resetForm()
+  editRecord.value = null
 }
 
 // 编辑
 function handleEdit(row: TableItem) {
   dialogTitle.value = '编辑'
   dialogVisible.value = true
-  Object.assign(formData, {
+  editRecord.value = {
     id: row.id,
     name: row.name,
     code: row.code,
     status: row.status,
     remark: (row as { remark?: string }).remark || ''
-  })
+  }
 }
 
 // 删除
@@ -272,53 +242,35 @@ function handleDelete(row: TableItem) {
 }
 
 // 提交表单
-async function handleSubmit() {
-  if (!formRef.value) return
+async function onConfirmDialog(payload: FormItem) {
+  submitLoading.value = true
+  try {
+    // TODO: 替换为实际的 API 调用
+    // if (payload.id) {
+    //   await post(`/your-api/update/${payload.id}`, payload)
+    //   ElMessage.success('更新成功')
+    // } else {
+    //   await post('/your-api/create', payload)
+    //   ElMessage.success('创建成功')
+    // }
 
-  await formRef.value.validate(async valid => {
-    if (!valid) return
+    // 模拟成功
+    await new Promise(resolve => setTimeout(resolve, 500))
+    ElMessage.success(payload.id ? '更新成功' : '创建成功')
 
-    submitLoading.value = true
-    try {
-      // TODO: 替换为实际的 API 调用
-      // if (formData.id) {
-      //   await post(`/your-api/update/${formData.id}`, formData)
-      //   ElMessage.success('更新成功')
-      // } else {
-      //   await post('/your-api/create', formData)
-      //   ElMessage.success('创建成功')
-      // }
-
-      // 模拟成功
-      await new Promise(resolve => setTimeout(resolve, 500))
-      ElMessage.success(formData.id ? '更新成功' : '创建成功')
-
-      dialogVisible.value = false
-      fetchData()
-    } catch (error) {
-      ElMessage.error(formData.id ? '更新失败' : '创建失败')
-      console.error(error)
-    } finally {
-      submitLoading.value = false
-    }
-  })
-}
-
-// 重置表单
-function resetForm() {
-  Object.assign(formData, {
-    id: undefined,
-    name: '',
-    code: '',
-    status: '1',
-    remark: ''
-  })
-  formRef.value?.clearValidate()
+    dialogVisible.value = false
+    fetchData()
+  } catch (error) {
+    ElMessage.error(payload.id ? '更新失败' : '创建失败')
+    console.error(error)
+  } finally {
+    submitLoading.value = false
+  }
 }
 
 // 对话框关闭
 function handleDialogClose() {
-  resetForm()
+  editRecord.value = null
 }
 
 // 初始化
