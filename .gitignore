@@ -28,3 +28,8 @@ package-lock.json
 pnpm-lock.yaml
 # 忽略OSS buckets配置
 ossutilconfig
+# 忽略打包过程中生成的配置文件
+/vite.config.js
+/vite.config.d.ts
+/tsconfig.node.tsbuildinfo
+/tsconfig.tsbuildinfo
