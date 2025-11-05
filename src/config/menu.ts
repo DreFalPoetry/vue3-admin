@@ -1,4 +1,4 @@
-import { Menu, Setting, User, Key } from '@element-plus/icons-vue'
+import { Menu, Setting, User, Key, Goods } from '@element-plus/icons-vue'
 import type { MenuItem } from '@/types/menu'
 
 export const menuList: MenuItem[] = [
@@ -9,6 +9,23 @@ export const menuList: MenuItem[] = [
     meta: {
       title: '仪表盘'
     }
+  },
+  {
+    path: '/goods',
+    name: 'goods',
+    icon: Goods,
+    meta: {
+      title: '商品'
+    },
+    children: [
+      {
+        path: '/goods/goods-manage',
+        name: 'goodManage',
+        meta: {
+          title: '商品管理'
+        }
+      }
+    ]
   },
   {
     path: '/system',

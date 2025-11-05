@@ -2,9 +2,13 @@
   <div class="tab-bar">
     <div ref="scrollWrapperRef" class="tab-scroll-wrapper">
       <div ref="tabListRef" class="tab-list">
-        <div v-for="tab in tabsStore.tabs" :key="tab.path"
-          :class="['tab-item', { active: tabsStore.activeTab === tab.path }]" @click="handleTabClick(tab.path)"
-          @contextmenu.prevent="handleContextMenu($event, tab.path)">
+        <div
+          v-for="tab in tabsStore.tabs"
+          :key="tab.path"
+          :class="['tab-item', { active: tabsStore.activeTab === tab.path }]"
+          @click="handleTabClick(tab.path)"
+          @contextmenu.prevent="handleContextMenu($event, tab.path)"
+        >
           <span class="tab-title">{{ tab.title }}</span>
           <el-icon v-if="tab.closable" class="tab-close" @click.stop="handleClose(tab.path)">
             <Close />
@@ -14,8 +18,14 @@
     </div>
 
     <!-- 右键菜单 -->
-    <el-dropdown v-if="contextMenuTab" ref="contextMenuRef" trigger="click" :teleported="false"
-      @command="handleContextCommand" @visible-change="handleMenuVisibleChange">
+    <el-dropdown
+      v-if="contextMenuTab"
+      ref="contextMenuRef"
+      trigger="click"
+      :teleported="false"
+      @command="handleContextCommand"
+      @visible-change="handleMenuVisibleChange"
+    >
       <div ref="contextMenuTriggerRef" class="context-menu-trigger" :style="contextMenuPosition"></div>
       <template #dropdown>
         <el-dropdown-menu>

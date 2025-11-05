@@ -10,12 +10,7 @@
         <el-col :span="8">
           <el-card>
             <template #header>角色列表</template>
-            <el-tree
-              :data="roleTree"
-              :props="{ label: 'name' }"
-              default-expand-all
-              @node-click="handleRoleClick"
-            />
+            <el-tree :data="roleTree" :props="{ label: 'name' }" default-expand-all @node-click="handleRoleClick" />
           </el-card>
         </el-col>
         <el-col :span="16">

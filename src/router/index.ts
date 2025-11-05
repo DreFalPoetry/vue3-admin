@@ -1,13 +1,9 @@
-import {
-  createRouter,
-  createWebHashHistory,
-  NavigationGuardNext,
-  RouteLocationNormalized
-} from 'vue-router'
+import { createRouter, createWebHashHistory, NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
 const Login = () => import('@/views/Login.vue')
 const Dashboard = () => import('@/views/Dashboard.vue')
+const GoodsManage = () => import('@/views/goods/goods-manage/Index.vue')
 const NotFound = () => import('@/views/NotFound.vue')
 const Redirect = () => import('@/views/Redirect.vue')
 const AdminLayout = () => import('@/layouts/AdminLayout.vue')
@@ -30,6 +26,7 @@ const router = createRouter({
       children: [
         { path: '', redirect: '/dashboard' },
         { path: 'dashboard', name: 'dashboard', component: Dashboard, meta: { title: '仪表盘' } },
+        { path: 'goods/goods-manage', name: 'goodManage', component: GoodsManage, meta: { title: '商品管理' } },
         { path: 'system/user', name: 'user', component: User, meta: { title: '用户管理' } },
         {
           path: 'system/role/list',
@@ -54,23 +51,21 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach(
-  (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
-    const userStore = useUserStore()
-    document.title = (to.meta?.title as string) ? `${to.meta?.title} - Admin` : 'Admin'
-    if (to.meta?.public) return next()
-    if (!userStore.isAuthenticated) return next({ name: 'login', query: { redirect: to.fullPath } })
+router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+  const userStore = useUserStore()
+  document.title = (to.meta?.title as string) ? `${to.meta?.title} - Admin` : 'Admin'
+  if (to.meta?.public) return next()
+  if (!userStore.isAuthenticated) return next({ name: 'login', query: { redirect: to.fullPath } })
 
-    // 同步 tabs store 的活动标签（跳过 redirect 路由，避免刷新时触发菜单操作）
-    if (!to.meta?.public && to.path !== '/redirect' && from.path !== '/redirect') {
-      import('@/stores/tabs').then(({ useTabsStore }) => {
-        const tabsStore = useTabsStore()
-        tabsStore.setActiveTab(to.path)
-      })
-    }
-
-    next()
+  // 同步 tabs store 的活动标签（跳过 redirect 路由，避免刷新时触发菜单操作）
+  if (!to.meta?.public && to.path !== '/redirect' && from.path !== '/redirect') {
+    import('@/stores/tabs').then(({ useTabsStore }) => {
+      const tabsStore = useTabsStore()
+      tabsStore.setActiveTab(to.path)
+    })
   }
-)
+
+  next()
+})
 
 export default router

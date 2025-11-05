@@ -7,12 +7,7 @@
           <span class="logo-text">Admin</span>
         </span>
       </div>
-      <el-menu
-        :collapse="app.sidebarCollapsed"
-        router
-        :default-active="route.path"
-        :collapse-transition="false"
-      >
+      <el-menu :collapse="app.sidebarCollapsed" router :default-active="route.path" :collapse-transition="false">
         <MenuItem v-for="item in menuList" :key="item.path" :item="item" />
       </el-menu>
     </el-aside>

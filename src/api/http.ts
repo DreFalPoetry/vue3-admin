@@ -1,10 +1,4 @@
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  InternalAxiosRequestConfig
-} from 'axios'
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { useUserStore } from '@/stores/user'
 
 const baseURL = '/api'
@@ -37,7 +31,6 @@ http.interceptors.response.use(
 
 export default http
 
-export const get = <T = unknown>(url: string, config?: AxiosRequestConfig) =>
-  http.get<T>(url, config)
+export const get = <T = unknown>(url: string, config?: AxiosRequestConfig) => http.get<T>(url, config)
 export const post = <T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
   http.post<T>(url, data, config)

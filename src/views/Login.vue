@@ -12,9 +12,7 @@
           <el-input v-model="form.password" type="password" placeholder="123456" show-password />
         </el-form-item>
         <el-form-item>
-          <el-button class="login-submit" type="primary" :loading="loading" @click="onSubmit"
-            >登录</el-button
-          >
+          <el-button class="login-submit" type="primary" :loading="loading" @click="onSubmit">登录</el-button>
         </el-form-item>
       </el-form>
     </el-card>

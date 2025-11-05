@@ -3,9 +3,10 @@
   "singleQuote": true,
   "tabWidth": 2,
   "trailingComma": "none",
-  "printWidth": 100,
+  "printWidth": 120,
   "arrowParens": "avoid",
+  "bracketSpacing": true,
   "endOfLine": "lf",
-  "vueIndentScriptAndStyle": false
+  "vueIndentScriptAndStyle": false,
+  "singleAttributePerLine": false
 }
-
