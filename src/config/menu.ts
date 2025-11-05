@@ -1,72 +1,38 @@
-import { Menu, Setting, User, Key, Goods } from '@element-plus/icons-vue'
+import type { RouteRecordRaw } from 'vue-router'
 import type { MenuItem } from '@/types/menu'
+import { appChildRoutes } from '@/router'
 
-export const menuList: MenuItem[] = [
-  {
-    path: '/dashboard',
-    name: 'dashboard',
-    icon: Menu,
-    meta: {
-      title: '仪表盘'
-    }
-  },
-  {
-    path: '/goods',
-    name: 'goods',
-    icon: Goods,
-    meta: {
-      title: '商品'
-    },
-    children: [
-      {
-        path: '/goods/goods-manage',
-        name: 'goodManage',
-        meta: {
-          title: '商品管理'
-        }
-      }
-    ]
-  },
-  {
-    path: '/system',
-    name: 'system',
-    icon: Setting,
-    meta: {
-      title: '系统管理'
-    },
-    children: [
-      {
-        path: '/system/user',
-        name: 'user',
-        icon: User,
-        meta: {
-          title: '用户管理'
-        }
-      },
-      {
-        path: '/system/role',
-        name: 'role',
-        icon: Key,
-        meta: {
-          title: '角色管理'
-        },
-        children: [
-          {
-            path: '/system/role/list',
-            name: 'roleList',
-            meta: {
-              title: '角色列表'
-            }
-          },
-          {
-            path: '/system/role/permission',
-            name: 'rolePermission',
-            meta: {
-              title: '权限配置'
-            }
-          }
-        ]
-      }
-    ]
+function routeToMenuItem(route: RouteRecordRaw): MenuItem | null {
+  if (route.meta && (route.meta as any).hidden) return null
+  const children = Array.isArray(route.children)
+    ? (route.children.map(routeToMenuItem).filter(Boolean) as MenuItem[])
+    : undefined
+
+  // skip redirect-only or unnamed nodes without title
+  const hasTitle = !!route.meta && !!(route.meta as any).title
+  const isRedirectOnly = !!(route as any).redirect && !route.component && !children?.length
+  if (!hasTitle || isRedirectOnly) {
+    return children && children.length === 1
+      ? children[0]
+      : children && children.length > 0
+        ? ({
+            path: route.path as string,
+            name: (route.name as string) || (route.path as string),
+            children,
+            meta: {}
+          } as MenuItem)
+        : null
   }
-]
+
+  return {
+    path: route.path as string,
+    name: (route.name as string) || (route.path as string),
+    icon: route.meta && (route.meta as any).icon ? ((route.meta as any).icon as any) : undefined,
+    children,
+    meta: { title: (route.meta as any).title }
+  }
+}
+
+export const menuList: MenuItem[] = (appChildRoutes.map(routeToMenuItem).filter(Boolean) as MenuItem[])
+  // ensure redirect '' is removed
+  .filter(item => item.path !== '')

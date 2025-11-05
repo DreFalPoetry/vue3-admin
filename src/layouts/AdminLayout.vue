@@ -42,9 +42,12 @@
       <TabBar />
       <el-main>
         <router-view v-slot="{ Component, route }">
-          <keep-alive :include="cachedViews">
-            <component :is="Component" :key="route.path + (route.query?._refresh || '')" />
-          </keep-alive>
+          <template v-if="route.meta?.keepAlive !== false">
+            <keep-alive>
+              <component :is="Component" :key="(route.name as string) || route.path" />
+            </keep-alive>
+          </template>
+          <component v-else :is="Component" :key="route.fullPath + (route.query?._refresh || '')" />
         </router-view>
       </el-main>
     </el-container>
@@ -102,10 +105,7 @@ function addTabForRoute(route: RouteLocationNormalized) {
   })
 }
 
-// 获取需要缓存的视图名称列表
-const cachedViews = computed(() => {
-  return tabsStore.tabs.map(tab => tab.name).filter(Boolean) as string[]
-})
+// 不再通过 include 名称列表控制缓存，改为模板里按 meta.keepAlive 条件渲染
 
 // 提供 collapse 状态给子组件
 provide(

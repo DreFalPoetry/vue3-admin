@@ -1,5 +1,12 @@
-import { createRouter, createWebHashHistory, NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
+import {
+  createRouter,
+  createWebHashHistory,
+  NavigationGuardNext,
+  RouteLocationNormalized,
+  type RouteRecordRaw
+} from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { Menu as MenuIcon, Setting, User as UserIcon, Key, Goods } from '@element-plus/icons-vue'
 
 const Login = () => import('@/views/Login.vue')
 const Dashboard = () => import('@/views/Dashboard.vue')
@@ -11,43 +18,72 @@ const User = () => import('@/views/system/User.vue')
 const RoleList = () => import('@/views/system/role/RoleList.vue')
 const RolePermission = () => import('@/views/system/role/RolePermission.vue')
 
+export const appChildRoutes: RouteRecordRaw[] = [
+  { path: '', redirect: '/dashboard' },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard,
+    meta: { title: '仪表盘', icon: MenuIcon }
+  },
+  {
+    path: '/goods',
+    name: 'goods',
+    meta: { title: '商品', icon: Goods },
+    children: [
+      {
+        path: '/goods/goods-manage',
+        name: 'goodManage',
+        component: GoodsManage,
+        meta: { title: '商品管理' }
+      }
+    ]
+  },
+  {
+    path: '/system',
+    name: 'system',
+    meta: { title: '系统管理', icon: Setting },
+    children: [
+      {
+        path: '/system/user',
+        name: 'user',
+        component: User,
+        meta: { title: '用户管理', icon: UserIcon }
+      },
+      {
+        path: '/system/role',
+        name: 'role',
+        meta: { title: '角色管理', icon: Key },
+        children: [
+          {
+            path: '/system/role/list',
+            name: 'roleList',
+            component: RoleList,
+            meta: { title: '角色列表' }
+          },
+          {
+            path: '/system/role/permission',
+            name: 'rolePermission',
+            component: RolePermission,
+            meta: { title: '权限配置' }
+          }
+        ]
+      }
+    ]
+  }
+]
+
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     { path: '/login', name: 'login', component: Login, meta: { public: true, title: '登录' } },
-    {
-      path: '/redirect',
-      component: Redirect,
-      meta: { public: true }
-    },
+    { path: '/redirect', component: Redirect, meta: { public: true } },
     {
       path: '/',
       component: AdminLayout,
-      children: [
-        { path: '', redirect: '/dashboard' },
-        { path: 'dashboard', name: 'dashboard', component: Dashboard, meta: { title: '仪表盘' } },
-        { path: 'goods/goods-manage', name: 'goodManage', component: GoodsManage, meta: { title: '商品管理' } },
-        { path: 'system/user', name: 'user', component: User, meta: { title: '用户管理' } },
-        {
-          path: 'system/role/list',
-          name: 'roleList',
-          component: RoleList,
-          meta: { title: '角色列表' }
-        },
-        {
-          path: 'system/role/permission',
-          name: 'rolePermission',
-          component: RolePermission,
-          meta: { title: '权限配置' }
-        }
-      ]
+      children: appChildRoutes
     },
-    {
-      path: '/:pathMatch(.*)*',
-      name: 'not-found',
-      component: NotFound,
-      meta: { public: true, title: '404' }
-    }
+    { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound, meta: { public: true, title: '404' } }
   ]
 })
 

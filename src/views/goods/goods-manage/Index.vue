@@ -47,8 +47,7 @@
       </el-form>
 
       <!-- 数据表格 -->
-      <el-table v-loading="loading" :data="tableData" style="width: 100%"
-border stripe>
+      <el-table v-loading="loading" :data="tableData" style="width: 100%" border stripe>
         <el-table-column type="index" label="序号" width="60" align="center" />
         <el-table-column prop="id" label="ID" width="80" align="center" />
         <el-table-column prop="name" label="名称" min-width="150" />
@@ -133,7 +132,7 @@ import { Plus, Search, Refresh, Edit, Delete } from '@element-plus/icons-vue'
 // import { get, post } from '@/api/http'
 
 defineOptions({
-  name: 'PageTemplate'
+  name: 'goodManage'
 })
 
 // 页面标题（可根据实际需求修改）
