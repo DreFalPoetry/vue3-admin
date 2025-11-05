@@ -16,49 +16,25 @@
         </div>
         <div class="table-wrapper">
           <!-- 数据表格 -->
-          <el-table v-loading="loading" :data="tableData" style="width: 100%" border stripe>
-            <el-table-column type="index" label="序号" width="60" align="center" />
-            <el-table-column prop="id" label="ID" width="80" align="center" />
-            <el-table-column prop="name" label="名称" min-width="150" />
-            <el-table-column prop="code" label="编码" min-width="120" />
-            <el-table-column prop="status" label="状态" width="100" align="center">
-              <template #default="scope">
-                <el-tag :type="scope.row.status === '1' ? 'success' : 'danger'">
-                  {{ scope.row.status === '1' ? '启用' : '禁用' }}
-                </el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column prop="createTime" label="创建时间" width="180" />
-            <el-table-column label="操作" width="200" fixed="right" align="center">
-              <template #default="scope">
-                <el-button type="primary" link @click="handleEdit(scope.row)">
-                  <el-icon>
-                    <Edit />
-                  </el-icon>
-                  编辑
-                </el-button>
-                <el-button type="danger" link @click="handleDelete(scope.row)">
-                  <el-icon>
-                    <Delete />
-                  </el-icon>
-                  删除
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-
-        <!-- 分页 -->
-        <div class="pagination-container">
-          <el-pagination
-            v-model:current-page="pagination.page"
-            v-model:page-size="pagination.pageSize"
-            :page-sizes="[10, 20, 50, 100]"
-            :total="pagination.total"
-            layout="total, sizes, prev, pager, next, jumper"
-            @size-change="handleSizeChange"
-            @current-change="handlePageChange"
-          />
+          <BaseTable
+            :columns="columns"
+            :data="tableData"
+            :loading="loading"
+            :pagination="pagination"
+            show-pagination
+            selection
+            index
+            @page-change="onPageChange"
+            @size-change="onSizeChange"
+            @sort-change="onSortChange"
+          >
+            <!-- 自定义列内容 -->
+            <template #status="{ row }">
+              <el-tag :type="row.status ? 'success' : 'danger'">
+                {{ row.status ? '启用' : '禁用' }}
+              </el-tag>
+            </template>
+          </BaseTable>
         </div>
       </div>
     </el-card>
@@ -99,8 +75,9 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
-import { Plus, Edit, Delete } from '@element-plus/icons-vue'
+import { Plus } from '@element-plus/icons-vue'
 import SearchForm from '@/components/SearchForm.vue'
+import BaseTable from '@/components/base-table/Index.vue'
 // import { get, post } from '@/api/http'
 
 defineOptions({
@@ -135,16 +112,26 @@ const searchItems: any[] = [
   }
 ]
 
+const pagination = ref({ page: 1, pageSize: 10, total: 2 })
 // 表格数据
 const loading = ref(false)
+
+const columns = [
+  { label: '姓名', prop: 'name' },
+  { label: '邮箱', prop: 'email' },
+  { label: '状态', prop: 'status', slot: 'status' }
+]
 const tableData = ref<TableItem[]>([])
 
-// 分页
-const pagination = reactive({
-  page: 1,
-  pageSize: 10,
-  total: 0
-})
+function onPageChange(p: number) {
+  pagination.value.page = p
+}
+function onSizeChange(s: number) {
+  pagination.value.pageSize = s
+}
+function onSortChange(info: any) {
+  console.log('排序信息', info)
+}
 
 // 对话框
 const dialogVisible = ref(false)
@@ -220,7 +207,7 @@ async function fetchData() {
         createTime: '2024-01-02 10:00:00'
       }
     ]
-    pagination.total = 2
+    pagination.value.total = 2
   } catch (error) {
     ElMessage.error('获取数据失败')
     console.error(error)
@@ -231,23 +218,13 @@ async function fetchData() {
 
 // 搜索
 function handleSearch() {
-  pagination.page = 1
+  pagination.value.page = 1
   fetchData()
 }
 
 // 重置搜索
 function handleReset() {
-  pagination.page = 1
-  fetchData()
-}
-
-// 分页大小改变
-function handleSizeChange() {
-  fetchData()
-}
-
-// 页码改变
-function handlePageChange() {
+  pagination.value.page = 1
   fetchData()
 }
 

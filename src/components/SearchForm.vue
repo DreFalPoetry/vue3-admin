@@ -1,12 +1,13 @@
 <template>
-  <el-form ref="formRef" :model="internalModel" :inline="inline" class="search-form" :label-width="labelWidth">
+  <el-form ref="formRef" :model="localModel" :inline="inline" class="search-form" :label-width="labelWidth">
     <el-row :gutter="gutter">
       <el-col v-for="(item, index) in items" :key="index" :span="Number(item.colSpan) || defaultColSpan">
         <el-form-item :label="item.label" :prop="item.prop">
           <component
             v-if="item.type !== 'custom'"
             :is="componentOf(item)"
-            v-model="internalModel[item.prop]"
+            :model-value="getValue(item.prop)"
+            @update:model-value="(val: any) => setValue(item.prop, val)"
             v-bind="controlAttrs(item)"
             :placeholder="item.placeholder"
             @keyup.enter="onSearch"
@@ -16,7 +17,7 @@
             </template>
           </component>
 
-          <slot v-else :name="item.slotName || item.prop" :model="internalModel" />
+          <slot v-else :name="item.slotName || item.prop" :model="localModel" />
         </el-form-item>
       </el-col>
 
@@ -84,10 +85,17 @@ const defaultColSpan = computed(() => props.defaultColSpan)
 const actionsColSpan = computed(() => props.actionsColSpan ?? defaultColSpan.value)
 const actionsAlign = computed(() => props.actionsAlign)
 
-const internalModel = computed({
-  get: () => props.modelValue,
-  set: v => emit('update:modelValue', { ...v })
-})
+// local reactive copy to avoid mutating readonly props
+const localModel = ref<Record<string, any>>({ ...props.modelValue })
+
+function getValue(prop: string) {
+  return localModel.value[prop]
+}
+
+function setValue(prop: string, val: any) {
+  localModel.value = { ...localModel.value, [prop]: val }
+  emit('update:modelValue', { ...localModel.value })
+}
 
 function componentOf(item: Record<string, any>) {
   switch (item.type) {
