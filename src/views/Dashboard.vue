@@ -25,5 +25,3 @@ defineOptions({
   name: 'Dashboard'
 })
 </script>
-
-
