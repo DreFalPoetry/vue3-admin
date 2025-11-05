@@ -1,0 +1,30 @@
+node_modules
+dist
+.env
+.env.*
+!.env.example
+.idea
+.DS_Store
+.vscode
+coverage
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/public/static/upload
+/locales/*.local.json
+# Mac系统缩略图缓存
+._*
+# 忽略打包后目录
+/build
+# 忽略临时文件
+*.tmp
+*.temp
+# 忽略测试快照
+__snapshots__/
+/*.local
+# 忽略老的lock文件
+package-lock.json
+pnpm-lock.yaml
+# 忽略OSS buckets配置
+ossutilconfig
