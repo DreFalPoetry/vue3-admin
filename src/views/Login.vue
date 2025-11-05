@@ -4,7 +4,7 @@
       <template #header>
         <div class="card-header">登录</div>
       </template>
-      <el-form :model="form" @keyup.enter="onSubmit" label-width="80px">
+      <el-form :model="form" label-width="80px" @keyup.enter="onSubmit">
         <el-form-item label="用户名">
           <el-input v-model="form.username" placeholder="admin" />
         </el-form-item>
@@ -12,12 +12,13 @@
           <el-input v-model="form.password" type="password" placeholder="123456" show-password />
         </el-form-item>
         <el-form-item>
-          <el-button class="login-submit" type="primary" :loading="loading" @click="onSubmit">登录</el-button>
+          <el-button class="login-submit" type="primary" :loading="loading" @click="onSubmit"
+            >登录</el-button
+          >
         </el-form-item>
       </el-form>
     </el-card>
   </div>
-
 </template>
 
 <script setup lang="ts">
@@ -36,7 +37,7 @@ async function onSubmit() {
   try {
     loading.value = true
     // Demo: fake api login, return mock token
-    await new Promise((r) => setTimeout(r, 600))
+    await new Promise(r => setTimeout(r, 600))
     user.login('mock-token-' + Date.now(), form.username)
     const redirect = (route.query.redirect as string) || '/'
     router.replace(redirect)

@@ -1,56 +1,46 @@
 <template>
   <div class="tab-bar">
-    <div class="tab-scroll-wrapper" ref="scrollWrapperRef">
-      <div class="tab-list" ref="tabListRef">
-        <div
-          v-for="tab in tabsStore.tabs"
-          :key="tab.path"
-          :class="['tab-item', { active: tabsStore.activeTab === tab.path }]"
-          @click="handleTabClick(tab.path)"
-          @contextmenu.prevent="handleContextMenu($event, tab.path)"
-        >
+    <div ref="scrollWrapperRef" class="tab-scroll-wrapper">
+      <div ref="tabListRef" class="tab-list">
+        <div v-for="tab in tabsStore.tabs" :key="tab.path"
+          :class="['tab-item', { active: tabsStore.activeTab === tab.path }]" @click="handleTabClick(tab.path)"
+          @contextmenu.prevent="handleContextMenu($event, tab.path)">
           <span class="tab-title">{{ tab.title }}</span>
-          <el-icon
-            v-if="tab.closable"
-            class="tab-close"
-            @click.stop="handleClose(tab.path)"
-          >
+          <el-icon v-if="tab.closable" class="tab-close" @click.stop="handleClose(tab.path)">
             <Close />
           </el-icon>
         </div>
       </div>
     </div>
-    
+
     <!-- 右键菜单 -->
-    <el-dropdown
-      v-if="contextMenuTab"
-      ref="contextMenuRef"
-      trigger="click"
-      :teleported="false"
-      @command="handleContextCommand"
-      @visible-change="handleMenuVisibleChange"
-    >
-      <div
-        ref="contextMenuTriggerRef"
-        class="context-menu-trigger"
-        :style="contextMenuPosition"
-      ></div>
+    <el-dropdown v-if="contextMenuTab" ref="contextMenuRef" trigger="click" :teleported="false"
+      @command="handleContextCommand" @visible-change="handleMenuVisibleChange">
+      <div ref="contextMenuTriggerRef" class="context-menu-trigger" :style="contextMenuPosition"></div>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item command="refresh">
-            <el-icon><Refresh /></el-icon>
+            <el-icon>
+              <Refresh />
+            </el-icon>
             <span>刷新</span>
           </el-dropdown-item>
           <el-dropdown-item command="close" :disabled="!contextMenuTab?.closable">
-            <el-icon><Close /></el-icon>
+            <el-icon>
+              <Close />
+            </el-icon>
             <span>关闭</span>
           </el-dropdown-item>
           <el-dropdown-item command="closeOthers">
-            <el-icon><CircleClose /></el-icon>
+            <el-icon>
+              <CircleClose />
+            </el-icon>
             <span>关闭其他</span>
           </el-dropdown-item>
           <el-dropdown-item command="closeAll">
-            <el-icon><Delete /></el-icon>
+            <el-icon>
+              <Delete />
+            </el-icon>
             <span>关闭全部</span>
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -74,10 +64,10 @@ const tabListRef = ref<HTMLElement>()
 // 右键菜单相关
 const contextMenuRef = ref()
 const contextMenuTriggerRef = ref<HTMLElement>()
-const contextMenuStyle = ref({ 
-  display: 'none', 
-  left: '0px', 
-  top: '0px' 
+const contextMenuStyle = ref({
+  display: 'none',
+  left: '0px',
+  top: '0px'
 })
 const contextMenuTab = ref<TabItem | null>(null)
 
@@ -137,9 +127,9 @@ function handleClose(path: string) {
 
 // 处理右键菜单
 function handleContextMenu(event: MouseEvent, path: string) {
-  const tab = tabsStore.tabs.find((t) => t.path === path)
+  const tab = tabsStore.tabs.find(t => t.path === path)
   if (!tab) return
-  
+
   // 如果已经有菜单打开，先关闭它
   if (contextMenuTab.value) {
     closeContextMenu()
@@ -155,17 +145,17 @@ function handleContextMenu(event: MouseEvent, path: string) {
 // 打开右键菜单
 function openContextMenu(event: MouseEvent, tab: TabItem) {
   contextMenuTab.value = tab
-  
+
   // 设置菜单位置
   const x = event.clientX
   const y = event.clientY
-  
+
   contextMenuStyle.value = {
     display: 'block',
     left: `${x}px`,
     top: `${y}px`
   }
-  
+
   nextTick(() => {
     contextMenuRef.value?.handleOpen()
   })
@@ -174,12 +164,12 @@ function openContextMenu(event: MouseEvent, tab: TabItem) {
 // 处理右键菜单命令
 function handleContextCommand(command: string) {
   if (!contextMenuTab.value) return
-  
+
   const tabPath = contextMenuTab.value.path
-  
+
   // 立即关闭菜单，避免路由变化时菜单闪烁
   closeContextMenu()
-  
+
   // 使用 nextTick 确保菜单关闭后再执行操作
   nextTick(() => {
     switch (command) {
@@ -207,16 +197,16 @@ function handleContextCommand(command: string) {
 
 // 刷新当前标签页
 function handleRefresh(path: string) {
-  const tab = tabsStore.tabs.find((t) => t.path === path)
+  const tab = tabsStore.tabs.find(t => t.path === path)
   if (!tab) return
-  
+
   // 如果当前不是活动标签，先切换到该标签
   if (tabsStore.activeTab !== path) {
     tabsStore.setActiveTab(path)
     router.push(path)
     return
   }
-  
+
   // 刷新当前页面：通过添加时间戳参数来强制重新渲染组件
   // 直接在当前路由添加 query 参数，避免经过 redirect 路由触发菜单操作
   const currentRoute = router.currentRoute.value
@@ -268,7 +258,7 @@ function scrollToActiveTab() {
   overflow-y: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -295,37 +285,37 @@ function scrollToActiveTab() {
   white-space: nowrap;
   margin-right: 4px;
   transition: all 0.3s;
-  
+
   .tab-title {
     font-size: 13px;
     color: #606266;
   }
-  
+
   .tab-close {
     font-size: 12px;
     color: #909399;
     transition: color 0.3s;
-    
+
     &:hover {
       color: #f56c6c;
     }
   }
-  
+
   &:hover {
     background: #f5f7fa;
   }
-  
+
   &.active {
     background: #409eff;
     border-color: #409eff;
-    
+
     .tab-title {
       color: #fff;
     }
-    
+
     .tab-close {
       color: #fff;
-      
+
       &:hover {
         color: #f56c6c;
       }
@@ -340,4 +330,3 @@ function scrollToActiveTab() {
   pointer-events: none;
 }
 </style>
-

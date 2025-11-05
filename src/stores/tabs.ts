@@ -24,7 +24,7 @@ export const useTabsStore = defineStore('tabs', {
   actions: {
     // 添加标签页
     addTab(tab: TabItem) {
-      const exists = this.tabs.some((t) => t.path === tab.path)
+      const exists = this.tabs.some(t => t.path === tab.path)
       if (!exists) {
         this.tabs.push(tab)
         this.saveToStorage()
@@ -38,11 +38,11 @@ export const useTabsStore = defineStore('tabs', {
     },
     // 移除标签页，返回新的活动标签路径（如果被删除的是活动标签）
     removeTab(path: string): string | null {
-      const index = this.tabs.findIndex((t) => t.path === path)
+      const index = this.tabs.findIndex(t => t.path === path)
       if (index > -1) {
         const wasActive = this.activeTab === path
         let newActive: string | null = null
-        
+
         // 如果删除的是当前活动标签，先确定要切换到的标签
         if (wasActive && this.tabs.length > 1) {
           // 如果删除的不是最后一个，切换到下一个（右侧）
@@ -53,11 +53,11 @@ export const useTabsStore = defineStore('tabs', {
             newActive = this.tabs[index - 1].path
           }
         }
-        
+
         // 删除标签
         this.tabs.splice(index, 1)
         this.saveToStorage()
-        
+
         // 如果确定了新的活动标签，设置它
         if (newActive) {
           this.setActiveTab(newActive)
@@ -68,14 +68,14 @@ export const useTabsStore = defineStore('tabs', {
     },
     // 关闭其他标签，返回新的活动标签路径
     closeOthers(path: string): string | null {
-      const targetTab = this.tabs.find((t) => t.path === path)
+      const targetTab = this.tabs.find(t => t.path === path)
       if (!targetTab) return null
-      
-      this.tabs = this.tabs.filter((t) => t.path === path || !t.closable)
+
+      this.tabs = this.tabs.filter(t => t.path === path || !t.closable)
       this.saveToStorage()
-      
+
       // 如果当前活动标签被关闭了，切换到目标标签
-      if (!this.tabs.some((t) => t.path === this.activeTab)) {
+      if (!this.tabs.some(t => t.path === this.activeTab)) {
         this.setActiveTab(path)
         return path
       }
@@ -83,7 +83,7 @@ export const useTabsStore = defineStore('tabs', {
     },
     // 关闭所有标签，返回新的活动标签路径
     closeAll(): string | null {
-      this.tabs = this.tabs.filter((t) => !t.closable)
+      this.tabs = this.tabs.filter(t => !t.closable)
       this.saveToStorage()
       if (this.tabs.length > 0) {
         const newActive = this.tabs[0].path
@@ -108,7 +108,7 @@ export const useTabsStore = defineStore('tabs', {
       }
       // 加载活动标签
       const activeTab = Cookies.get(ACTIVE_TAB_KEY)
-      if (activeTab && this.tabs.some((t) => t.path === activeTab)) {
+      if (activeTab && this.tabs.some(t => t.path === activeTab)) {
         this.activeTab = activeTab
       } else if (this.tabs.length > 0) {
         this.activeTab = this.tabs[0].path
@@ -130,4 +130,3 @@ export const useTabsStore = defineStore('tabs', {
     }
   }
 })
-

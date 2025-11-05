@@ -78,7 +78,7 @@ onMounted(() => {
   user.loadFromStorage()
   tabsStore.loadFromStorage()
   tabsStore.initHomeTab()
-  
+
   // 初始化当前路由的 tab
   if (route.path !== '/login') {
     addTabForRoute(route)
@@ -109,11 +109,14 @@ function addTabForRoute(route: RouteLocationNormalized) {
 
 // 获取需要缓存的视图名称列表
 const cachedViews = computed(() => {
-  return tabsStore.tabs.map((tab) => tab.name).filter(Boolean) as string[]
+  return tabsStore.tabs.map(tab => tab.name).filter(Boolean) as string[]
 })
 
 // 提供 collapse 状态给子组件
-provide('menuCollapsed', computed(() => app.sidebarCollapsed))
+provide(
+  'menuCollapsed',
+  computed(() => app.sidebarCollapsed)
+)
 
 const asideWidth = computed(() => (app.sidebarCollapsed ? '64px' : 'var(--sidebar-width)'))
 
@@ -133,17 +136,17 @@ function onLogout() {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  
+
   .app-logo {
     display: flex;
     align-items: center;
     gap: 8px;
     white-space: nowrap;
   }
-  
+
   &.collapsed {
     padding: 16px 8px;
-    
+
     .logo-text {
       display: none;
     }
@@ -154,7 +157,7 @@ function onLogout() {
   background: #fff;
   border-right: 1px solid #ebeef5;
   overflow: hidden;
-  
+
   :deep(.el-menu) {
     border-right: none;
   }
@@ -178,7 +181,7 @@ function onLogout() {
   display: flex;
   align-items: center;
   gap: 12px;
-  
+
   .user-info {
     display: flex;
     align-items: center;
@@ -187,11 +190,11 @@ function onLogout() {
     padding: 4px 8px;
     border-radius: 4px;
     transition: background-color 0.3s;
-    
+
     &:hover {
       background-color: #f5f7fa;
     }
-    
+
     .username {
       font-size: 14px;
       color: #303133;
@@ -199,5 +202,3 @@ function onLogout() {
   }
 }
 </style>
-
-

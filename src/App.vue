@@ -12,7 +12,9 @@ const locale = zhCn
 </script>
 
 <style>
-html, body, #app {
+html,
+body,
+#app {
   height: 100%;
 }
 body {

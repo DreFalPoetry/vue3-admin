@@ -22,19 +22,18 @@ export function getRouteTitle(route: RouteLocationNormalized): string {
   if (route.meta?.title) {
     return route.meta.title as string
   }
-  
+
   // 从菜单配置中查找
   const menuItem = findMenuItem(route.path, menuList)
   if (menuItem?.meta?.title) {
     return menuItem.meta.title
   }
-  
+
   // 使用路由名称
   if (route.name) {
     return String(route.name)
   }
-  
+
   // 默认使用路径
   return route.path
 }
-

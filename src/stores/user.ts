@@ -16,7 +16,7 @@ export const useUserStore = defineStore('user', {
     user: null
   }),
   getters: {
-    isAuthenticated: (state) => Boolean(state.user?.token)
+    isAuthenticated: state => Boolean(state.user?.token)
   },
   actions: {
     login(token: string, name = 'Admin', id = '1') {
@@ -33,5 +33,3 @@ export const useUserStore = defineStore('user', {
     }
   }
 })
-
-

@@ -69,4 +69,3 @@ const tableData = ref([
   }
 }
 </style>
-
