@@ -19,8 +19,10 @@
             <el-icon>
               <Plus />
             </el-icon>
-            新增
+            创建商品
           </el-button>
+          <el-button type="primary"> 批量上架 </el-button>
+          <el-button type="primary"> 批量下架 </el-button>
         </div>
         <div class="table-wrapper">
           <!-- 数据表格 -->
@@ -42,6 +44,9 @@
                 {{ row.status ? '启用' : '禁用' }}
               </el-tag>
             </template>
+            <template #actionSlot="{ row }">
+              <ActionButtons :buttons="rowActionButtons(row)" :permissions="userPermissions" />
+            </template>
           </BaseTable>
         </div>
       </div>
@@ -59,11 +64,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import SearchForm from '@/components/SearchForm.vue'
 import BaseTable from '@/components/base-table/Index.vue'
+import ActionButtons from '@/components/ActionButtons.vue'
 import GoodsDialog from './GoodsDialog.vue'
 // import { get, post } from '@/api/http'
 
@@ -72,9 +78,12 @@ defineOptions({
 })
 
 // 搜索表单
-const searchForm = reactive({
-  keyword: '',
-  status: ''
+const searchForm = ref({
+  name: '',
+  type: null,
+  category: null,
+  status: null,
+  skuCode: ''
 })
 
 const searchItems: any[] = [
@@ -134,9 +143,16 @@ const pagination = ref({ page: 1, pageSize: 10, total: 2 })
 const loading = ref(false)
 
 const columns = [
-  { label: '姓名', prop: 'name' },
-  { label: '邮箱', prop: 'email' },
-  { label: '状态', prop: 'status', slot: 'status' }
+  { label: 'SKU编码', prop: 'skucode' },
+  { label: '商品信息', prop: 'name' },
+  { label: '商品类型', prop: 'type' },
+  { label: '售价', prop: 'price' },
+  { label: '库存', prop: 'stock' },
+  { label: '成本价', prop: 'initPrice' },
+  { label: '销售数量', prop: 'saleCount' },
+  { label: '创建时间', prop: 'createTime' },
+  { label: '商品状态', prop: 'status' },
+  { label: '操作', prop: 'actions', slot: 'actionSlot' }
 ]
 const tableData = ref<TableItem[]>([])
 
@@ -148,6 +164,44 @@ function onSizeChange(s: number) {
 }
 function onSortChange(info: any) {
   console.log('排序信息', info)
+}
+
+// 用户权限列表（实际应该从用户信息或权限管理模块获取）
+const userPermissions = ref<string[]>([
+  'goods:view', // 查看权限
+  'goods:edit', // 编辑权限
+  'goods:delete', // 删除权限（注释掉表示没有该权限）
+  'goods:copy' // 复制权限
+])
+
+// 行内操作按钮
+function rowActionButtons(row: TableItem) {
+  return [
+    {
+      label: '详情',
+      link: true,
+      permission: 'goods:view',
+      onClick: () => ElMessage.info(`查看 ${row.name}`)
+    },
+    {
+      label: '编辑',
+      link: true,
+      permission: 'goods:edit',
+      onClick: () => handleEdit(row)
+    },
+    {
+      label: '删除',
+      link: true,
+      permission: 'goods:delete',
+      onClick: () => handleDelete(row)
+    },
+    {
+      label: '复制',
+      link: true,
+      permission: 'goods:copy',
+      onClick: () => ElMessage.success('已复制')
+    }
+  ]
 }
 
 // 对话框
@@ -184,7 +238,7 @@ async function fetchData() {
     //   total: number
     // }>('/your-api/list', {
     //   params: {
-    //     ...searchForm,
+    //     ...searchForm.value,
     //     page: pagination.page,
     //     pageSize: pagination.pageSize
     //   }
