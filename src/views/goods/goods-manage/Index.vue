@@ -142,17 +142,38 @@ const pagination = ref({ page: 1, pageSize: 10, total: 2 })
 const loading = ref(false)
 
 const columns = [
-  { label: 'SKU编码', prop: 'skucode', widget: 'popover' },
-  { label: '商品信息', prop: 'name' },
-  { label: '商品类型', prop: 'type' },
-  { label: '售价', prop: 'price' },
-  { label: '库存', prop: 'stock' },
-  { label: '成本价', prop: 'initPrice', widget: 'priceformat' },
-  { label: '销售数量', prop: 'saleCount' },
-  { label: '创建时间', prop: 'createTime', width: 280 },
-  { label: '商品状态', prop: 'status', width: 280 },
-  { label: '操作', prop: 'actions', slot: 'actionSlot', width: 180 }
+  { prop: 'skucode', label: '商品名称', widget: 'popover' },
+  {
+    label: '价格信息',
+    prop: '1',
+    children: [
+      { prop: 'initPrice', label: '销售价', widget: 'priceformat' },
+      { prop: 'cost', label: '成本价', widget: 'priceformat' }
+    ]
+  },
+  {
+    label: '库存信息',
+    prop: '2',
+    children: [
+      { prop: 'saleCount', label: '库存数量' },
+      { prop: 'unit', label: '单位' },
+      { prop: 'actions', label: '操作', slot: 'actionSlot', width: 180 }
+    ]
+  }
 ]
+
+// const columns = [
+//   { label: 'SKU编码', prop: 'skucode', widget: 'popover' },
+//   { label: '商品信息', prop: 'name' },
+//   { label: '商品类型', prop: 'type' },
+//   { label: '售价', prop: 'price' },
+//   { label: '库存', prop: 'stock' },
+//   { label: '成本价', prop: 'initPrice', widget: 'priceformat' },
+//   { label: '销售数量', prop: 'saleCount' },
+//   { label: '创建时间', prop: 'createTime', width: 280 },
+//   { label: '商品状态', prop: 'status', width: 280 },
+//   { label: '操作', prop: 'actions', slot: 'actionSlot', width: 180 }
+// ]
 const tableData = ref<any[]>([])
 
 function onPageChange(p: number) {

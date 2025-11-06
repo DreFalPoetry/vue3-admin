@@ -13,4 +13,7 @@ export interface TableColumn {
   headerSlot?: string
   widget?: 'span' | 'priceformat' | 'popover' | string // <-- 新增字段
   widgetProps?: Record<string, any> // 可传额外参数
+  children?: TableColumn[] // 支持多级表头
 }
+
+export type SlotScopeType = Record<string, any>

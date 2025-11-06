@@ -21,38 +21,14 @@
       <!-- 序号 -->
       <el-table-column v-if="index" type="index" label="序号" width="60" align="center" />
 
-      <!-- 动态列渲染 -->
-      <template v-for="col in visibleColumns" :key="col.prop">
-        <el-table-column
-          :prop="col.prop"
-          :label="col.label"
-          :width="col.width"
-          :min-width="col.minWidth"
-          :align="col.align"
-          :header-align="col.headerAlign"
-          :sortable="col.sortable"
-          :formatter="col.formatter"
-          :fixed="col.fixed"
-        >
-          <!-- 自定义表头插槽 -->
-          <template v-if="col.headerSlot" #header="scope">
-            <slot :name="col.headerSlot" v-bind="scope" />
+      <!-- 动态列 -->
+      <template v-for="col in visibleColumns" :key="col.prop || col.label">
+        <TableColumnItem :column="col" :widget-map="widgetMap">
+          <!-- 透传所有外部插槽 -->
+          <template v-for="(_, name) in $slots" #[name]="slotProps">
+            <slot :name="name" v-bind="slotProps" />
           </template>
-
-          <!-- 自定义单元格插槽 -->
-          <template v-if="col.slot" #default="scope">
-            <slot :name="col.slot" v-bind="scope" />
-          </template>
-
-          <!-- 新增 widget 逻辑 -->
-          <template v-else #default="scope">
-            <component
-              :is="getWidgetComponent(col.widget)"
-              :value="scope.row[col.prop]"
-              v-bind="col.widgetProps"
-            />
-          </template>
-        </el-table-column>
+        </TableColumnItem>
       </template>
     </el-table>
 
@@ -74,10 +50,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import type { TableColumn } from './types'
+import TableColumnItem from './TableColumnItem.vue'
 import { registerWidgets } from './utils/registerWidgets'
-
-// 自动注册 widgets
-const widgetMap = registerWidgets()
 
 const props = defineProps({
   columns: { type: Array as () => TableColumn[], required: true },
@@ -100,7 +74,8 @@ const emit = defineEmits(['sort-change', 'selection-change', 'page-change', 'siz
 
 const tableRef = ref()
 const tableData = ref(props.data)
-
+// 自动注册 widgets
+const widgetMap = registerWidgets()
 const visibleColumns = computed(() => props.columns.filter(col => col.show !== false))
 
 watch(
@@ -110,11 +85,6 @@ watch(
   },
   { deep: true }
 )
-
-function getWidgetComponent(widget?: string) {
-  if (!widget) return widgetMap['span']
-  return widgetMap[widget.toLowerCase()] || widgetMap['span']
-}
 
 function onSortChange(sortInfo: any) {
   emit('sort-change', sortInfo)
