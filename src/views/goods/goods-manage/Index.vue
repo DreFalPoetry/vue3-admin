@@ -1,15 +1,18 @@
 <template>
   <div class="page-container">
-    <el-card>
+    <el-card class="search-card" shadow="never">
       <!-- 搜索表单（公用组件） -->
       <SearchForm
         v-model="searchForm"
         :items="searchItems as any"
+        :actionsColSpan="6"
+        :actionsColSpanExpanded="18"
+        actionsAlign="right"
         @search="handleSearch"
         @reset="handleReset"
       />
     </el-card>
-    <el-card>
+    <el-card class="table-card" shadow="never">
       <div class="generate-table-wrapper">
         <div class="table-actions">
           <el-button type="primary" @click="handleAdd">
@@ -77,22 +80,52 @@ const searchForm = reactive({
 const searchItems: any[] = [
   {
     type: 'input',
-    prop: 'keyword',
-    label: '关键词',
-    placeholder: '请输入关键词',
+    prop: 'name',
+    label: '商品名称',
+    placeholder: '请输入',
+    colSpan: 6
+  },
+  {
+    type: 'select',
+    prop: 'type',
+    label: '商品类型',
+    placeholder: '全部',
     colSpan: 6,
-    attrs: { clearable: true }
+    options: [
+      { label: '商品', value: '1' },
+      { label: '服务', value: '2' },
+      { label: '其他', value: '3' }
+    ]
+  },
+  {
+    type: 'select',
+    prop: 'category',
+    label: '商品类目',
+    placeholder: '全部',
+    options: [
+      { label: '水果', value: '1' },
+      { label: '蔬菜', value: '2' },
+      { label: '肉类', value: '3' },
+      { label: '海鲜', value: '4' },
+      { label: '其他', value: '5' }
+    ]
   },
   {
     type: 'select',
     prop: 'status',
-    label: '状态',
-    placeholder: '请选择状态',
+    label: '商品状态',
+    placeholder: '全部',
     options: [
-      { label: '启用', value: '1' },
-      { label: '禁用', value: '0' }
-    ],
-    attrs: { clearable: true, style: 'width: 160px' }
+      { label: '上架', value: '1' },
+      { label: '已下架', value: '0' }
+    ]
+  },
+  {
+    type: 'input',
+    prop: 'skuCode',
+    label: 'SKU编码',
+    placeholder: '请输入',
+    colSpan: 6
   }
 ]
 
@@ -279,24 +312,4 @@ onMounted(() => {
 })
 </script>
 
-<style lang="less" scoped>
-.page-container {
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 600;
-    font-size: 16px;
-  }
-
-  .search-form {
-    margin-bottom: 0px;
-  }
-
-  .pagination-container {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-end;
-  }
-}
-</style>
+<style lang="less" scoped></style>

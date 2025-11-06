@@ -116,7 +116,6 @@ function onSizeChange(size: number) {
 .base-table {
   width: 100%;
   background: #fff;
-  padding: 10px;
   border-radius: 8px;
 
   .table-pagination {
