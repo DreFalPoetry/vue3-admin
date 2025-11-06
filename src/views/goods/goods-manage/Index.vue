@@ -33,7 +33,6 @@
             :pagination="pagination"
             show-pagination
             selection
-            index
             @page-change="onPageChange"
             @size-change="onSizeChange"
             @sort-change="onSortChange"
@@ -143,18 +142,18 @@ const pagination = ref({ page: 1, pageSize: 10, total: 2 })
 const loading = ref(false)
 
 const columns = [
-  { label: 'SKU编码', prop: 'skucode' },
+  { label: 'SKU编码', prop: 'skucode', widget: 'popover' },
   { label: '商品信息', prop: 'name' },
   { label: '商品类型', prop: 'type' },
   { label: '售价', prop: 'price' },
   { label: '库存', prop: 'stock' },
-  { label: '成本价', prop: 'initPrice' },
+  { label: '成本价', prop: 'initPrice', widget: 'priceformat' },
   { label: '销售数量', prop: 'saleCount' },
-  { label: '创建时间', prop: 'createTime' },
-  { label: '商品状态', prop: 'status' },
-  { label: '操作', prop: 'actions', slot: 'actionSlot' }
+  { label: '创建时间', prop: 'createTime', width: 280 },
+  { label: '商品状态', prop: 'status', width: 280 },
+  { label: '操作', prop: 'actions', slot: 'actionSlot', width: 180 }
 ]
-const tableData = ref<TableItem[]>([])
+const tableData = ref<any[]>([])
 
 function onPageChange(p: number) {
   pagination.value.page = p
@@ -251,6 +250,8 @@ async function fetchData() {
     tableData.value = [
       {
         id: 1,
+        skucode: '1111121212121212222222222222222222222212112',
+        initPrice: 11,
         name: '示例数据1',
         code: 'example1',
         status: '1',
@@ -260,6 +261,7 @@ async function fetchData() {
         id: 2,
         name: '示例数据2',
         code: 'example2',
+        initPrice: 222,
         status: '0',
         createTime: '2024-01-02 10:00:00'
       }

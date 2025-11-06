@@ -11,4 +11,6 @@ export interface TableColumn {
   show?: boolean
   slot?: string
   headerSlot?: string
+  widget?: 'span' | 'priceformat' | 'popover' | string // <-- 新增字段
+  widgetProps?: Record<string, any> // 可传额外参数
 }

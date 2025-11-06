@@ -43,6 +43,15 @@
           <template v-if="col.slot" #default="scope">
             <slot :name="col.slot" v-bind="scope" />
           </template>
+
+          <!-- 新增 widget 逻辑 -->
+          <template v-else #default="scope">
+            <component
+              :is="getWidgetComponent(col.widget)"
+              :value="scope.row[col.prop]"
+              v-bind="col.widgetProps"
+            />
+          </template>
         </el-table-column>
       </template>
     </el-table>
@@ -65,6 +74,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import type { TableColumn } from './types'
+import { registerWidgets } from './utils/registerWidgets'
+
+// 自动注册 widgets
+const widgetMap = registerWidgets()
 
 const props = defineProps({
   columns: { type: Array as () => TableColumn[], required: true },
@@ -97,6 +110,11 @@ watch(
   },
   { deep: true }
 )
+
+function getWidgetComponent(widget?: string) {
+  if (!widget) return widgetMap['span']
+  return widgetMap[widget.toLowerCase()] || widgetMap['span']
+}
 
 function onSortChange(sortInfo: any) {
   emit('sort-change', sortInfo)
