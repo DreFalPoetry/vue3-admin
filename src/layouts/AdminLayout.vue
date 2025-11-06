@@ -7,7 +7,12 @@
           <span class="logo-text">Admin</span>
         </span>
       </div>
-      <el-menu :collapse="app.sidebarCollapsed" router :default-active="route.path" :collapse-transition="false">
+      <el-menu
+        :collapse="app.sidebarCollapsed"
+        router
+        :default-active="activeMenu"
+        :collapse-transition="false"
+      >
         <MenuItem v-for="item in menuList" :key="item.path" :item="item" />
       </el-menu>
     </el-aside>
@@ -93,6 +98,15 @@ watch(
     }
   }
 )
+
+const activeMenu = computed(() => {
+  const { meta, path } = route
+  // if set path, the sidebar will highlight the path you set
+  if (meta.activeMenu) {
+    return meta.activeMenu
+  }
+  return path
+})
 
 // 添加路由对应的 tab
 function addTabForRoute(route: RouteLocationNormalized) {

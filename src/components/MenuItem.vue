@@ -6,7 +6,12 @@
       </el-icon>
       <span>{{ item.meta?.title || item.name }}</span>
     </template>
-    <MenuItem v-for="child in item.children" :key="child.path" :item="child" :is-top-level="false" />
+    <MenuItem
+      v-for="child in item.children"
+      :key="child.path"
+      :item="child"
+      :is-top-level="false"
+    />
   </el-sub-menu>
   <el-tooltip
     v-else-if="isTopLevel"
