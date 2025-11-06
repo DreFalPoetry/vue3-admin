@@ -11,6 +11,7 @@ import { Menu as MenuIcon, Setting, User as UserIcon, Key, Goods } from '@elemen
 const Login = () => import('@/views/Login.vue')
 const Dashboard = () => import('@/views/Dashboard.vue')
 const GoodsManage = () => import('@/views/goods/goods-manage/Index.vue')
+const GoodsManageCreate = () => import('@/views/goods/goods-manage/Create.vue')
 const NotFound = () => import('@/views/NotFound.vue')
 const Redirect = () => import('@/views/Redirect.vue')
 const AdminLayout = () => import('@/layouts/AdminLayout.vue')
@@ -36,6 +37,12 @@ export const appChildRoutes: RouteRecordRaw[] = [
         name: 'goodManage',
         component: GoodsManage,
         meta: { title: '商品管理' }
+      },
+      {
+        path: '/goods/goods-manage/create',
+        name: 'GoodsManageCreate',
+        component: GoodsManageCreate,
+        meta: { title: '商品管理-创建', hidden: true, activeMenu: '/goods/goods-manage' }
       }
     ]
   },
@@ -83,25 +90,32 @@ const router = createRouter({
       component: AdminLayout,
       children: appChildRoutes
     },
-    { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound, meta: { public: true, title: '404' } }
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: NotFound,
+      meta: { public: true, title: '404' }
+    }
   ]
 })
 
-router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
-  const userStore = useUserStore()
-  document.title = (to.meta?.title as string) ? `${to.meta?.title} - Admin` : 'Admin'
-  if (to.meta?.public) return next()
-  if (!userStore.isAuthenticated) return next({ name: 'login', query: { redirect: to.fullPath } })
+router.beforeEach(
+  (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+    const userStore = useUserStore()
+    document.title = (to.meta?.title as string) ? `${to.meta?.title} - Admin` : 'Admin'
+    if (to.meta?.public) return next()
+    if (!userStore.isAuthenticated) return next({ name: 'login', query: { redirect: to.fullPath } })
 
-  // 同步 tabs store 的活动标签（跳过 redirect 路由，避免刷新时触发菜单操作）
-  if (!to.meta?.public && to.path !== '/redirect' && from.path !== '/redirect') {
-    import('@/stores/tabs').then(({ useTabsStore }) => {
-      const tabsStore = useTabsStore()
-      tabsStore.setActiveTab(to.path)
-    })
+    // 同步 tabs store 的活动标签（跳过 redirect 路由，避免刷新时触发菜单操作）
+    if (!to.meta?.public && to.path !== '/redirect' && from.path !== '/redirect') {
+      import('@/stores/tabs').then(({ useTabsStore }) => {
+        const tabsStore = useTabsStore()
+        tabsStore.setActiveTab(to.path)
+      })
+    }
+
+    next()
   }
-
-  next()
-})
+)
 
 export default router

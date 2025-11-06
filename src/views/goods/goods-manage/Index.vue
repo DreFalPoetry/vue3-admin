@@ -64,17 +64,21 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import SearchForm from '@/components/SearchForm.vue'
 import BaseTable from '@/components/base-table/Index.vue'
 import ActionButtons from '@/components/ActionButtons.vue'
 import GoodsDialog from './GoodsDialog.vue'
+
 // import { get, post } from '@/api/http'
 
 defineOptions({
   name: 'goodManage'
 })
+
+const router = useRouter()
 
 // 搜索表单
 const searchForm = ref({
@@ -310,9 +314,8 @@ function handleReset() {
 
 // 新增
 function handleAdd() {
-  dialogTitle.value = '新增'
-  dialogVisible.value = true
-  editRecord.value = null
+  router.push({ path: '/goods/goods-manage/create' })
+  return
 }
 
 // 编辑
