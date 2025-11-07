@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import Cookies from 'js-cookie'
 
 export interface TabItem {
   path: string
@@ -34,7 +33,7 @@ export const useTabsStore = defineStore('tabs', {
     // 设置活动标签
     setActiveTab(path: string) {
       this.activeTab = path
-      Cookies.set(ACTIVE_TAB_KEY, path, { expires: 7, path: '/' })
+      sessionStorage.setItem(ACTIVE_TAB_KEY, path)
     },
     // 移除标签页，返回新的活动标签路径（如果被删除的是活动标签）
     removeTab(path: string): string | null {
@@ -94,11 +93,11 @@ export const useTabsStore = defineStore('tabs', {
     },
     // 保存到存储
     saveToStorage() {
-      Cookies.set(TABS_STORAGE_KEY, JSON.stringify(this.tabs), { expires: 7, path: '/' })
+      sessionStorage.setItem(TABS_STORAGE_KEY, JSON.stringify(this.tabs))
     },
     // 从存储加载
     loadFromStorage() {
-      const tabsStr = Cookies.get(TABS_STORAGE_KEY)
+      const tabsStr = sessionStorage.getItem(TABS_STORAGE_KEY)
       if (tabsStr) {
         try {
           this.tabs = JSON.parse(tabsStr)
@@ -107,7 +106,7 @@ export const useTabsStore = defineStore('tabs', {
         }
       }
       // 加载活动标签
-      const activeTab = Cookies.get(ACTIVE_TAB_KEY)
+      const activeTab = sessionStorage.getItem(ACTIVE_TAB_KEY)
       if (activeTab && this.tabs.some(t => t.path === activeTab)) {
         this.activeTab = activeTab
       } else if (this.tabs.length > 0) {

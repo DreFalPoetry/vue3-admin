@@ -1,5 +1,5 @@
 <template>
-  <Modify :page-action="PAGE_ACTIONS.CREATE" />
+  <Modify :page-action="PAGE_ACTIONS.DETAIL" />
 </template>
 
 <script setup lang="ts">

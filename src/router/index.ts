@@ -12,6 +12,8 @@ const Login = () => import('@/views/Login.vue')
 const Dashboard = () => import('@/views/Dashboard.vue')
 const GoodsManage = () => import('@/views/goods/goods-manage/Index.vue')
 const GoodsManageCreate = () => import('@/views/goods/goods-manage/Create.vue')
+const GoodsManageEdit = () => import('@/views/goods/goods-manage/Edit.vue')
+const GoodsManageDetail = () => import('@/views/goods/goods-manage/Detail.vue')
 const NotFound = () => import('@/views/NotFound.vue')
 const Redirect = () => import('@/views/Redirect.vue')
 const AdminLayout = () => import('@/layouts/AdminLayout.vue')
@@ -40,9 +42,21 @@ export const appChildRoutes: RouteRecordRaw[] = [
       },
       {
         path: '/goods/goods-manage/create',
-        name: 'GoodsManageCreate',
+        name: 'goodsManageCreate',
         component: GoodsManageCreate,
         meta: { title: '商品管理-创建', hidden: true, activeMenu: '/goods/goods-manage' }
+      },
+      {
+        path: '/goods/goods-manage/edit/:id',
+        name: 'goodsManageEdit',
+        component: GoodsManageEdit,
+        meta: { title: '商品管理修改', hidden: true, activeMenu: '/goods/goods-manage' }
+      },
+      {
+        path: '/goods/goods-manage/detail/:id',
+        name: 'goodsManageDetail',
+        component: GoodsManageDetail,
+        meta: { title: '商品管理详情', hidden: true, activeMenu: '/goods/goods-manage' }
       }
     ]
   },

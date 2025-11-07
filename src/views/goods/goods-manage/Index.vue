@@ -71,6 +71,7 @@ import SearchForm from '@/components/SearchForm.vue'
 import BaseTable from '@/components/base-table/Index.vue'
 import ActionButtons from '@/components/ActionButtons.vue'
 import GoodsDialog from './GoodsDialog.vue'
+import { TableItem, FormItem } from '../types/index'
 
 // import { get, post } from '@/api/http'
 
@@ -205,7 +206,7 @@ function rowActionButtons(row: TableItem) {
       label: '详情',
       link: true,
       permission: 'goods:view',
-      onClick: () => ElMessage.info(`查看 ${row.name}`)
+      onClick: () => handleDetail(row)
     },
     {
       label: '编辑',
@@ -233,24 +234,6 @@ const dialogVisible = ref(false)
 const dialogTitle = ref('新增')
 const submitLoading = ref(false)
 const editRecord = ref<Partial<FormItem> | null>(null)
-
-// 类型定义
-interface TableItem {
-  id: number
-  name: string
-  code: string
-  status: string
-  createTime: string
-  [key: string]: unknown
-}
-
-interface FormItem {
-  id?: number
-  name: string
-  code: string
-  status: string
-  remark: string
-}
 
 // 获取列表数据
 async function fetchData() {
@@ -315,20 +298,25 @@ function handleReset() {
 // 新增
 function handleAdd() {
   router.push({ path: '/goods/goods-manage/create' })
-  return
 }
 
 // 编辑
 function handleEdit(row: TableItem) {
-  dialogTitle.value = '编辑'
-  dialogVisible.value = true
-  editRecord.value = {
-    id: row.id,
-    name: row.name,
-    code: row.code,
-    status: row.status,
-    remark: (row as { remark?: string }).remark || ''
-  }
+  router.push({ path: `/goods/goods-manage/edit/${row.id}` })
+  // dialogTitle.value = '编辑'
+  // dialogVisible.value = true
+  // editRecord.value = {
+  //   id: row.id,
+  //   name: row.name,
+  //   code: row.code,
+  //   status: row.status,
+  //   remark: (row as { remark?: string }).remark || ''
+  // }
+}
+
+// 详情
+function handleDetail(row: TableItem) {
+  router.push({ path: `/goods/goods-manage/detail/${row.id}` })
 }
 
 // 删除
