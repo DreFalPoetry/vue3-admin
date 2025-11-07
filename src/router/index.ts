@@ -47,8 +47,7 @@ export const appChildRoutes: RouteRecordRaw[] = [
         meta: {
           title: '商品管理-创建',
           hidden: true,
-          activeMenu: '/goods/goods-manage',
-          keepAlive: false
+          activeMenu: '/goods/goods-manage'
         }
       },
       {
@@ -58,8 +57,7 @@ export const appChildRoutes: RouteRecordRaw[] = [
         meta: {
           title: '商品管理修改',
           hidden: true,
-          activeMenu: '/goods/goods-manage',
-          keepAlive: false
+          activeMenu: '/goods/goods-manage'
         }
       },
       {

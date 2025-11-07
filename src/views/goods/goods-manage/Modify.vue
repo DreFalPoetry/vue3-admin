@@ -8,6 +8,7 @@
     </el-tabs>
     <div class="section-wrapper">
       <div class="c-section-header">基础信息</div>
+      <el-input v-model="input" placeholder="请输入内容"></el-input>
     </div>
   </div>
 </template>
@@ -25,6 +26,8 @@ const props = defineProps({
 })
 
 const activeName = ref('first')
+
+const input = ref('')
 
 const handleClick = (tab: TabsPaneContext, event: Event) => {
   console.log(tab, event)

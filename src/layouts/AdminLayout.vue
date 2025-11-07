@@ -46,13 +46,8 @@
 
       <TabBar />
       <el-main>
-        <router-view v-slot="{ Component, route }">
-          <template v-if="route.meta?.keepAlive !== false">
-            <keep-alive>
-              <component :is="Component" :key="(route.name as string) || route.path" />
-            </keep-alive>
-          </template>
-          <component v-else :is="Component" :key="route.fullPath + (route.query?._refresh || '')" />
+        <router-view v-slot="{ Component }">
+          <SmartKeepAlive :component="Component" :include-list="tabPathList" />
         </router-view>
       </el-main>
     </el-container>
@@ -70,6 +65,7 @@ import { menuList } from '@/config/menu'
 import { getRouteTitle } from '@/utils/tabs'
 import MenuItem from '@/components/MenuItem.vue'
 import TabBar from '@/components/TabBar.vue'
+import SmartKeepAlive from '@/components/SmartKeepAlive.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -86,6 +82,11 @@ onMounted(() => {
   if (route.path !== '/login') {
     addTabForRoute(route)
   }
+})
+
+const tabPathList = computed(() => {
+  const tabList = tabsStore.tabs
+  return tabList.map(v => v.path)
 })
 
 // 监听路由变化，自动添加 tab
