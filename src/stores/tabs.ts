@@ -35,6 +35,14 @@ export const useTabsStore = defineStore('tabs', {
       this.activeTab = path
       sessionStorage.setItem(ACTIVE_TAB_KEY, path)
     },
+    // 更新标签页
+    updateTabTitle(path: string, newTitle: string) {
+      const currentTabIdx = this.tabs.findIndex(t => t.path === path)
+      if (currentTabIdx > -1) {
+        this.tabs.splice(currentTabIdx, 1, { ...this.tabs[currentTabIdx], title: newTitle })
+        this.saveToStorage()
+      }
+    },
     // 移除标签页，返回新的活动标签路径（如果被删除的是活动标签）
     removeTab(path: string): string | null {
       const index = this.tabs.findIndex(t => t.path === path)

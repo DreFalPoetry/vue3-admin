@@ -44,19 +44,34 @@ export const appChildRoutes: RouteRecordRaw[] = [
         path: '/goods/goods-manage/create',
         name: 'goodsManageCreate',
         component: GoodsManageCreate,
-        meta: { title: '商品管理-创建', hidden: true, activeMenu: '/goods/goods-manage' }
+        meta: {
+          title: '商品管理-创建',
+          hidden: true,
+          activeMenu: '/goods/goods-manage',
+          keepAlive: false
+        }
       },
       {
         path: '/goods/goods-manage/edit/:id',
         name: 'goodsManageEdit',
         component: GoodsManageEdit,
-        meta: { title: '商品管理修改', hidden: true, activeMenu: '/goods/goods-manage' }
+        meta: {
+          title: '商品管理修改',
+          hidden: true,
+          activeMenu: '/goods/goods-manage',
+          keepAlive: false
+        }
       },
       {
         path: '/goods/goods-manage/detail/:id',
         name: 'goodsManageDetail',
         component: GoodsManageDetail,
-        meta: { title: '商品管理详情', hidden: true, activeMenu: '/goods/goods-manage' }
+        meta: {
+          title: '商品管理详情',
+          hidden: true,
+          activeMenu: '/goods/goods-manage',
+          keepAlive: false
+        }
       }
     ]
   },
