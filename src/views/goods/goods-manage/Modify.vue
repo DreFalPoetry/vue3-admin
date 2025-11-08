@@ -94,7 +94,33 @@
             <el-input v-model="ruleForm.name" />
           </el-form-item>
         </div>
-
+        <el-divider />
+        <div class="c-section-header">规格参数</div>
+        <div class="c-section-content">
+          <el-form-item label="商品规格：" >
+            <el-button type="primary" @click="handleManageGoodsSpec">管理商品规格</el-button>
+          </el-form-item>
+          <el-form-item label="是否需要空桶回收：" prop="needRecycle">
+            <el-radio-group v-model="ruleForm.needRecycle">
+              <el-radio value="1"> 是 </el-radio>
+              <el-radio value="0"> 否 </el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="单次配送费用：" prop="deliveryFee">
+            <number-input v-model="ruleForm.deliveryFee" unit="元" />
+          </el-form-item>
+          <el-form-item label="水票有效期：" prop="waterTicketValidity">
+            <el-radio-group v-model="ruleForm.waterTicketValidity">
+              <el-radio value="1"> 永久有效 </el-radio>
+              <el-radio value="0"> 固定有效期 </el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </div>
+         <el-divider />
+        <div class="c-section-header">商品详情</div>
+        <div class="c-section-content"> 
+          <rich-editor v-model="ruleForm.desc" />
+        </div>
         <div class="c-section-footer">
           <el-button @click="resetForm(ruleFormRef)">取消</el-button>
           <el-button type="primary" @click="submitForm(ruleFormRef)"> 保存 </el-button>
@@ -119,6 +145,9 @@ interface RuleForm {
   type: string[]
   resource: string
   desc: string
+  needRecycle: string,
+  deliveryFee: number | undefined,
+  waterTicketValidity: string,
 }
 
 const props = defineProps({
@@ -147,7 +176,10 @@ const ruleForm = reactive<RuleForm>({
   location: '',
   type: [],
   resource: '',
-  desc: ''
+  desc: '',
+  needRecycle: '0',
+  deliveryFee: undefined,
+  waterTicketValidity: '1'
 })
 
 const rules = reactive<FormRules<RuleForm>>({
@@ -212,6 +244,10 @@ const rules = reactive<FormRules<RuleForm>>({
 
 const handleChange = (name: TabPaneName) => {
   console.log(name)
+}
+
+const handleManageGoodsSpec = () => {
+  console.log('管理商品规格')
 }
 
 const submitForm = async (formEl: FormInstance | undefined) => {
