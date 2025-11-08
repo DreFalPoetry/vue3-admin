@@ -97,7 +97,7 @@
         <el-divider />
         <div class="c-section-header">规格参数</div>
         <div class="c-section-content">
-          <el-form-item label="商品规格：" >
+          <el-form-item label="商品规格：">
             <el-button type="primary" @click="handleManageGoodsSpec">管理商品规格</el-button>
           </el-form-item>
           <el-form-item label="是否需要空桶回收：" prop="needRecycle">
@@ -115,11 +115,51 @@
               <el-radio value="0"> 固定有效期 </el-radio>
             </el-radio-group>
           </el-form-item>
+          <el-form-item label="水票有效天数：" prop="afterSaleValidity">
+            <number-input v-model="ruleForm.afterSaleValidity" :precision="0" :min="0" unit="天" />
+          </el-form-item>
         </div>
-         <el-divider />
+        <el-divider />
         <div class="c-section-header">商品详情</div>
-        <div class="c-section-content"> 
-          <rich-editor v-model="ruleForm.desc" />
+        <div class="c-section-content">
+          <el-form-item label="" label-width="0px" prop="desc">
+            <rich-editor v-model="ruleForm.desc" />
+          </el-form-item>
+        </div>
+        <el-divider />
+        <div class="c-section-header">其他设置</div>
+        <div class="c-section-content">
+          <el-form-item label="售后有效期：" prop="afterSaleValidity">
+            <number-input v-model="ruleForm.afterSaleValidity" :precision="0" :min="0" unit="天" />
+          </el-form-item>
+          <el-form-item label="上架设置：" prop="region">
+            <el-radio-group v-model="ruleForm.region">
+              <el-radio value="1"> 立即上架 </el-radio>
+              <el-radio value="0"> 暂不上架 </el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <div class="limit-line">
+            <el-form-item label="每人限购数量：" prop="limit">
+              <el-radio-group v-model="ruleForm.limit">
+                <el-radio value="0"> 不限购 </el-radio>
+                <el-radio value="1"> 永久限购 </el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item
+              label=" "
+              label-width="10px"
+              prop="limitCount"
+              v-if="ruleForm.limit === '1'"
+            >
+              <number-input v-model="ruleForm.limitCount" :precision="0" :min="0" />
+            </el-form-item>
+          </div>
+          <el-form-item label="限制销售范围：" prop="region">
+            <el-select v-model="ruleForm.region" placeholder="Activity zone">
+              <el-option label="Zone one" value="shanghai" />
+              <el-option label="Zone two" value="beijing" />
+            </el-select>
+          </el-form-item>
         </div>
         <div class="c-section-footer">
           <el-button @click="resetForm(ruleFormRef)">取消</el-button>
@@ -145,9 +185,12 @@ interface RuleForm {
   type: string[]
   resource: string
   desc: string
-  needRecycle: string,
-  deliveryFee: number | undefined,
-  waterTicketValidity: string,
+  needRecycle: string
+  deliveryFee: number | undefined
+  waterTicketValidity: string
+  limit: string
+  limitCount: number | undefined
+  afterSaleValidity: number | undefined
 }
 
 const props = defineProps({
@@ -179,7 +222,10 @@ const ruleForm = reactive<RuleForm>({
   desc: '',
   needRecycle: '0',
   deliveryFee: undefined,
-  waterTicketValidity: '1'
+  waterTicketValidity: '1',
+  limit: '0',
+  limitCount: undefined,
+  afterSaleValidity: undefined
 })
 
 const rules = reactive<FormRules<RuleForm>>({
@@ -273,5 +319,9 @@ const resetForm = (formEl: FormInstance | undefined) => {
   .el-select {
     width: 200px;
   }
+}
+
+.limit-line {
+  display: flex;
 }
 </style>
